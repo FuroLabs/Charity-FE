@@ -1,0 +1,118 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Base surface and text */
+    --background: 210 33% 99%; /* very light blue-tinted white */
+    --foreground: 222 47% 11%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+
+    /* Brand blues */
+    --primary: 221 83% 53%; /* blue-600 */
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 214 96% 93%; /* blue-50 */
+    --secondary-foreground: 221 39% 11%;
+
+    --muted: 215 32% 92%;
+    --muted-foreground: 215 16% 47%;
+
+    --accent: 214 96% 93%;
+    --accent-foreground: 221 39% 11%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 221 83% 53%;
+
+    /* Shape */
+    --radius: 0.625rem; /* 10px for softer look */
+
+    /* Sidebar tokens */
+    --sidebar-background: 210 33% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 221 83% 53%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 214 96% 93%;
+    --sidebar-accent-foreground: 221 39% 11%;
+    --sidebar-border: 214 32% 91%;
+    --sidebar-ring: 221 83% 53%;
+
+    /* Brand gradient helpers (used in utilities) */
+    --brand-from: 243 75% 59%; /* indigo-500 */
+    --brand-to: 221 83% 53%;  /* blue-600 */
+  }
+
+  .dark {
+    --background: 0 0% 0%; /* true black background */
+    --foreground: 210 40% 98%;
+
+    --card: 0 0% 6%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 0 0% 6%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 223 40% 12%;
+
+  --secondary: 0 0% 12%;
+    --secondary-foreground: 210 40% 98%;
+
+  --muted: 0 0% 14%;
+    --muted-foreground: 215 20% 65%;
+
+  --accent: 0 0% 12%;
+    --accent-foreground: 210 40% 98%;
+
+  --destructive: 0 63% 31%;
+    --destructive-foreground: 210 40% 98%;
+
+  --border: 0 0% 16%;
+  --input: 0 0% 16%;
+    --ring: 213 27% 84%;
+
+  --sidebar-background: 0 0% 0%;
+    --sidebar-foreground: 220 13% 91%;
+  --sidebar-primary: 224 76% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 0 0% 10%;
+    --sidebar-accent-foreground: 220 13% 91%;
+  --sidebar-border: 0 0% 12%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+
+    --brand-from: 243 75% 59%;
+    --brand-to: 224 76% 48%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  /* Make native date picker calendar icon visible in dark mode */
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    /* allow custom filter via CSS variable if needed */
+    filter: var(--date-indicator-filter, none);
+    opacity: 0.95;
+  }
+
+  /* In dark mode invert the default icon so it's visible on dark backgrounds */
+  .dark input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1) brightness(2) contrast(1);
+  }
+}
