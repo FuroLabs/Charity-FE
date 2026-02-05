@@ -1,286 +1,175 @@
 # ImpactHub Frontend
 
-React.js frontend for the ImpactHub charitable donation platform.
+A modern React-based web application for charitable donation management, built with TypeScript and powered by Vite.
 
-## Setup (Sprint 0)
-- Will use Create React App or Vite (to be decided in Sprint 0)
-- Material-UI for UI components
-- To be initialized in Sprint 1
+## Overview
 
-## Sprint 1 Requirements (MVP Core Features)
+ImpactHub is a comprehensive platform that connects donors with charitable campaigns. The application provides a seamless experience for browsing campaigns, making secure donations, and tracking impact metrics.
 
-### 🎯 Sprint 1 Goals
-Implement core user-facing features that enable users to browse campaigns and make donations.
+## Technology Stack
 
-### ✅ Must-Have Features (Sprint 1)
+### Core Framework
+- **React 18** with TypeScript for type safety
+- **Vite** for fast development and optimized builds
+- **React Router v6** for client-side routing
 
-#### 1. Campaign Browsing System
-**Components to Build:**
-- `CampaignGrid` - Responsive grid layout for campaign cards
-- `CampaignCard` - Individual campaign preview with image, title, progress bar, target amount
-- `CategoryFilter` - Filter campaigns by category (Education, Health, Environment, etc.)
-- `SearchBar` - Real-time search functionality
-- `SortDropdown` - Sort by progress, target amount, ending soon, newest
-- `Pagination` - Navigate through campaign pages
+### UI & Styling
+- **Tailwind CSS** for utility-first styling
+- **shadcn/ui** for high-quality component library
+- **Framer Motion** for smooth animations
 
-**API Integration:**
-```javascript
-// Key endpoints to integrate
-GET /api/campaigns - List campaigns with filtering
-GET /api/campaigns/search - Search campaigns
-GET /api/campaigns/categories - Get available categories
-GET /api/campaigns/featured - Featured campaigns
+### State & Data Management
+- **React Context API** for global state
+- **React Query** for server state management
+- **React Hook Form** with Zod validation
+
+### Payment Integration
+- **Stripe** for secure payment processing
+- Payment Intents API for enhanced security
+
+### Development Tools
+- **ESLint** for code quality
+- **Prettier** for code formatting
+- **TypeScript** for static type checking
+
+## Project Structure
+
+```
+src/
+├── components/          # Reusable UI components
+│   ├── auth/           # Authentication components
+│   ├── common/         # Shared components
+│   └── ui/             # UI library components
+├── contexts/           # React Context providers
+├── hooks/              # Custom React hooks
+├── lib/                # Utility functions
+├── pages/              # Page components
+│   ├── admin/          # Admin dashboard pages
+│   ├── auth/           # Authentication pages
+│   ├── donor/          # Donor dashboard pages
+│   ├── leader/         # Campaign leader pages
+│   └── publicc/        # Public-facing pages
+└── services/           # API service layer
 ```
 
-#### 2. Campaign Details Page
-**Components to Build:**
-- `CampaignDetails` - Full campaign information display
-- `ProgressBar` - Visual progress indicator with animations
-- `DonationForm` - Multi-step donation process
-- `RecentDonations` - List of recent donors (anonymized)
-- `ImpactReports` - Campaign updates and reports
-- `SocialShare` - Share buttons for social media
-- `CampaignStats` - Days remaining, donation count, progress percentage
+## Key Features
 
-**Features:**
-- Responsive image gallery
-- Progress visualization with animations
-- Social sharing integration
-- Mobile-optimized layout
+### Campaign Management
+- Browse and search campaigns with advanced filtering
+- Real-time progress tracking and analytics
+- Category-based organization
+- Featured campaign highlights
 
-#### 3. Secure Donation Flow
-**Components to Build:**
-- `DonationWizard` - Multi-step donation process
-  - Step 1: Amount selection with preset options
-  - Step 2: Donor information form
-  - Step 3: Payment with Stripe integration
-  - Step 4: Confirmation and receipt
-- `PaymentForm` - Stripe Elements integration
-- `DonationConfirmation` - Success page with donation details
-- `AmountSelector` - Preset amounts + custom input
+### Donation System
+- Secure payment processing via Stripe
+- Multiple donation amount options
+- Donation history and receipts
+- Anonymous donation support
 
-**Payment Integration:**
-```javascript
-// Stripe integration requirements
-- Stripe React SDK integration
-- Secure card input with Stripe Elements
-- Payment intent creation and confirmation
-- Error handling for failed payments
-- Loading states during processing
+### User Roles
+- **Donors**: Make donations and track contribution history
+- **Campaign Leaders**: Create and manage campaigns
+- **Administrators**: Platform oversight and user management
+
+### Dashboard Features
+- Role-specific dashboards
+- Analytics and reporting
+- Notification system
+- Profile management
+
+## Getting Started
+
+### Prerequisites
+- Node.js 16+ and pnpm
+- Modern web browser
+
+### Installation
+
+```bash
+# Install dependencies
+pnpm install
+
+# Start development server
+pnpm dev
+
+# Build for production
+pnpm build
+
+# Preview production build
+pnpm preview
 ```
 
-#### 4. User Authentication (Optional but Recommended)
-**Components to Build:**
-- `LoginForm` - Email/password login
-- `RegisterForm` - User registration
-- `GoogleAuthButton` - Google OAuth integration
-- `UserProfile` - View/edit user preferences
-- `DonationHistory` - Personal donation tracking
+### Environment Variables
 
-#### 5. Core Layout & Navigation
-**Components to Build:**
-- `Header` - Navigation with responsive menu
-- `Footer` - Links, contact info, social media
-- `Layout` - Common page structure
-- `LoadingSpinner` - Loading states
-- `ErrorBoundary` - Error handling
-- `NotFound` - 404 page
+Create a `.env` file in the root directory:
 
-### 🛠 Technical Stack (Sprint 1)
-
-#### Core Technologies
-- **Framework**: React 18 with TypeScript
-- **Build Tool**: Vite (recommended) or Create React App
-- **Styling**: Tailwind CSS + Headless UI or Material-UI v5
-- **State Management**: React Context API + useReducer
-- **Forms**: React Hook Form + Zod validation
-- **HTTP Client**: Axios with interceptors
-- **Routing**: React Router v6
-
-#### Payment Integration
-- **Stripe**: @stripe/stripe-js + @stripe/react-stripe-js
-- **Payment Flow**: Payment Intents API
-
-#### Development Tools
-- **Linting**: ESLint + Prettier
-- **Testing**: Jest + React Testing Library
-- **Dev Server**: Vite dev server with HMR
-
-### 📁 Recommended Project Structure
-```
-frontend/
-├── public/
-├── src/
-│   ├── components/
-│   │   ├── common/          # Shared components
-│   │   ├── campaigns/       # Campaign-related components
-│   │   ├── donations/       # Donation flow components
-│   │   ├── auth/           # Authentication components
-│   │   └── layout/         # Layout components
-│   ├── pages/              # Page components
-│   ├── hooks/              # Custom React hooks
-│   ├── services/           # API services
-│   ├── utils/              # Helper functions
-│   ├── types/              # TypeScript types
-│   ├── context/            # React Context providers
-│   └── assets/             # Images, icons, etc.
-├── package.json
-└── README.md
+```env
+VITE_API_BASE_URL=your_api_url
+VITE_STRIPE_PUBLIC_KEY=your_stripe_key
 ```
 
-### 🔌 API Integration Points
-```javascript
-// Campaign endpoints
-const campaignAPI = {
-  getAllCampaigns: (params) => axios.get('/api/campaigns', { params }),
-  getCampaign: (id) => axios.get(`/api/campaigns/${id}`),
-  searchCampaigns: (query) => axios.get('/api/campaigns/search', { params: query }),
-  getCategories: () => axios.get('/api/campaigns/categories'),
-  getFeatured: () => axios.get('/api/campaigns/featured'),
-};
+## API Integration
 
-// Donation endpoints
-const donationAPI = {
-  createPaymentIntent: (data) => axios.post('/api/donations/create-payment-intent', data),
-  confirmDonation: (data) => axios.post('/api/donations/confirm', data),
-  getDonationHistory: (email) => axios.get(`/api/donations/history/${email}`),
-};
+### Core Endpoints
+
+```typescript
+// Campaign operations
+GET    /api/campaigns
+GET    /api/campaigns/:id
+POST   /api/campaigns
+PUT    /api/campaigns/:id
+DELETE /api/campaigns/:id
+
+// Donation operations
+POST   /api/donations/create-payment-intent
+POST   /api/donations/confirm
+GET    /api/donations/history
+
+// User operations
+POST   /api/auth/login
+POST   /api/auth/register
+GET    /api/users/profile
+PUT    /api/users/profile
 ```
 
-### 📱 Responsive Design Requirements
-- **Mobile First**: Design for mobile screens first
-- **Breakpoints**: 
-  - Mobile: 320px - 768px
-  - Tablet: 768px - 1024px
-  - Desktop: 1024px+
-- **Touch Friendly**: Minimum 44px touch targets
-- **Performance**: Lazy loading for images and components
+## Development Guidelines
 
-### ⚡ Performance Targets (Sprint 1)
-- **First Contentful Paint**: < 1.5s
-- **Largest Contentful Paint**: < 2.5s
-- **Bundle Size**: < 500KB initial load
-- **Image Optimization**: WebP format with fallbacks
+### Code Quality
+- Follow TypeScript best practices
+- Maintain consistent code formatting
+- Write self-documenting code
+- Use meaningful variable and function names
 
----
+### Component Structure
+- Keep components focused and single-purpose
+- Use composition over inheritance
+- Implement proper prop typing
+- Handle loading and error states
 
-## Sprint 2 Requirements (Enhanced Features)
+### Performance Optimization
+- Implement code splitting for routes
+- Lazy load heavy components
+- Optimize images and assets
+- Minimize bundle size
 
-### 🎯 Sprint 2 Goals
-Enhance user experience with advanced features, admin capabilities, and improved performance.
+## Responsive Design
 
-### ✅ Enhanced Features (Sprint 2)
+The application is fully responsive with breakpoints:
+- Mobile: < 768px
+- Tablet: 768px - 1024px
+- Desktop: > 1024px
 
-#### 1. Advanced User Dashboard
-**Components to Build:**
-- `UserDashboard` - Personal donation overview
-- `DonationAnalytics` - Charts showing donation patterns
-- `FavoriteCampaigns` - Saved/bookmarked campaigns
-- `DonationCertificates` - Downloadable donation receipts
-- `UserPreferences` - Notification settings, preferred categories
-- `ProfileSettings` - Avatar upload, personal information
+## Accessibility
 
-#### 2. Campaign Management (Admin Features)
-**Components to Build:**
-- `AdminDashboard` - Admin overview with metrics
-- `CampaignCreator` - Multi-step campaign creation form
-- `CampaignEditor` - Edit existing campaigns
-- `MediaUploader` - Image/video upload with preview
-- `ImpactReportEditor` - Create and edit impact reports
-- `CampaignAnalytics` - Detailed campaign performance metrics
-- `UserManagement` - Manage users and organizations
-
-#### 3. Enhanced Search & Discovery
-**Components to Build:**
-- `AdvancedFilters` - Location, amount range, organization type
-- `MapView` - Geographic campaign visualization
-- `RecommendationEngine` - Personalized campaign suggestions
-- `TrendingCampaigns` - Popular and trending campaigns
-- `SavedSearches` - Save and manage search queries
-
-#### 4. Social Features
-**Components to Build:**
-- `CampaignComments` - User comments and updates
-- `DonorWall` - Public donor recognition (optional)
-- `ShareTracking` - Track social media engagement
-- `CommunityFeed` - Updates from followed campaigns
-- `LeaderBoard` - Top donors and most active campaigns
-
-#### 5. Advanced Payment Features
-**Components to Build:**
-- `PayPalIntegration` - Alternative payment method
-- `RecurringDonations` - Monthly/yearly donation setup
-- `DonationGoals` - Personal donation targets
-- `CorporateDonations` - Business donation features
-- `TaxReceipts` - Automated tax documentation
-
-#### 6. Performance & Analytics
-**Components to Build:**
-- `AnalyticsDashboard` - Comprehensive analytics
-- `PerformanceMonitor` - Real-time performance tracking
-- `A/B Testing` - Component variant testing
-- `ErrorTracking` - Advanced error reporting
-- `UserBehaviorTracking` - User interaction analytics
-
-### 🛠 Enhanced Technical Stack (Sprint 2)
-
-#### Advanced State Management
-- **Global State**: Redux Toolkit or Zustand
-- **Server State**: React Query (TanStack Query)
-- **Form State**: React Hook Form with complex validation
-
-#### Advanced UI/UX
-- **Animations**: Framer Motion or React Spring
-- **Charts**: Chart.js or Recharts
-- **Maps**: Mapbox GL JS or Google Maps
-- **Rich Text**: Quill.js or Draft.js
-
-#### Performance Optimization
-- **Code Splitting**: React.lazy + Suspense
-- **Image Optimization**: Next.js Image or custom solution
-- **PWA Features**: Service workers, offline support
-- **Bundle Analysis**: webpack-bundle-analyzer
-
-#### Testing & Quality
-- **Unit Tests**: Jest + React Testing Library
-- **E2E Tests**: Cypress or Playwright
-- **Visual Testing**: Storybook
-- **Performance Testing**: Lighthouse CI
-
-### 📊 Advanced Features Breakdown
-
-#### Real-time Features
-- Live donation updates using WebSockets
-- Real-time campaign progress updates
-- Live chat support integration
-- Push notifications for important updates
-
-#### Accessibility Improvements
 - WCAG 2.1 AA compliance
-- Screen reader optimization
 - Keyboard navigation support
-- High contrast mode
+- Screen reader optimization
+- High contrast mode support
 
-#### Internationalization
-- Multi-language support
-- Currency localization
-- Date/time formatting
-- RTL language support
+## License
 
-### 🚀 Performance Targets (Sprint 2)
-- **First Contentful Paint**: < 1.0s
-- **Time to Interactive**: < 3.0s
-- **Bundle Size**: < 300KB initial (with code splitting)
-- **Lighthouse Score**: > 90 for all metrics
+This project is proprietary software developed by FURO Labs.
 
-### 📋 Sprint 2 Priority Order
-1. **High Priority**: User dashboard, admin features, advanced search
-2. **Medium Priority**: Social features, PayPal integration, analytics
-3. **Low Priority**: A/B testing, advanced animations, PWA features
+## Support
 
-### 🔧 Development Workflow
-- **Feature Branches**: One branch per feature
-- **Code Reviews**: Required for all PRs
-- **Testing**: Unit tests required for all components
-- **Documentation**: Storybook stories for all UI components
-- **Performance**: Bundle analysis on each build
+For technical support or inquiries, please contact the development team.
