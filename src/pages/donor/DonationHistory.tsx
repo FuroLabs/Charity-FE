@@ -425,7 +425,7 @@ const DonationHistory: React.FC = () => {
                         <div className="w-20 bg-muted rounded-full h-2">
                           <div className="bg-blue-600 h-2 rounded-full" style={{ width: '45%' }} />
                         </div>
-                        <span className="text-sm text-muted-foreground">$225</span>
+                        <span className="text-sm text-muted-foreground">Rs.225</span>
                       </div>
                     </div>
                     <div className="flex justify-between items-center">
@@ -434,7 +434,7 @@ const DonationHistory: React.FC = () => {
                         <div className="w-20 bg-muted rounded-full h-2">
                           <div className="bg-green-600 h-2 rounded-full" style={{ width: '30%' }} />
                         </div>
-                        <span className="text-sm text-muted-foreground">$100</span>
+                        <span className="text-sm text-muted-foreground">Rs.100</span>
                       </div>
                     </div>
                     <div className="flex justify-between items-center">
@@ -443,7 +443,7 @@ const DonationHistory: React.FC = () => {
                         <div className="w-20 bg-muted rounded-full h-2">
                           <div className="bg-red-600 h-2 rounded-full" style={{ width: '25%' }} />
                         </div>
-                        <span className="text-sm text-muted-foreground">$275</span>
+                        <span className="text-sm text-muted-foreground">Rs.275</span>
                       </div>
                     </div>
                   </div>
@@ -458,11 +458,11 @@ const DonationHistory: React.FC = () => {
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="text-center">
-                    <div className="text-3xl font-bold text-green-600">$325</div>
+                    <div className="text-3xl font-bold text-green-600">Rs.325</div>
                     <div className="text-sm text-muted-foreground">This Month</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-3xl font-bold text-blue-600">$275</div>
+                    <div className="text-3xl font-bold text-blue-600">Rs.275</div>
                     <div className="text-sm text-muted-foreground">Last Month</div>
                   </div>
                   <div className="text-center">
