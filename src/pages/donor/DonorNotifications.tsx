@@ -106,7 +106,7 @@ const DonorNotifications: React.FC = () => {
     const readIds = notifications.filter(n => n.read).map(n => n.id);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(readIds));
     // Dispatch custom event to notify navbar
-    window.dispatchEvent(new Event('notificationsUpdated'));
+    globalThis.dispatchEvent(new Event('notificationsUpdated'));
   }, [notifications]);
 
   const getTypeLabel = (type: string) => {
