@@ -200,7 +200,7 @@ const DonorNotifications: React.FC = () => {
         {/* Notifications List */}
         <div className="space-y-4">
           {filteredNotifications.map((notification) => (
-            <Card key={notification.id} className={`transition-colors duration-200 ${!notification.read ? 'border-l-4 border-l-indigo-500 bg-indigo-50 dark:bg-indigo-950' : 'hover:bg-gray-50 dark:hover:bg-gray-800'}`}>
+            <Card key={notification.id} className={`transition-colors duration-200 ${notification.read ? 'hover:bg-gray-50 dark:hover:bg-gray-800' : 'border-l-4 border-l-indigo-500 bg-indigo-50 dark:bg-indigo-950'}`}>
               <CardContent className="p-6">
                 <div className="flex items-start space-x-4">
                   {/* Icon or Avatar */}
