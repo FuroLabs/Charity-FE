@@ -29,6 +29,7 @@ import DonorProfile from './pages/donor/DonorProfile';
 import DonorDashboard from './pages/donor/DonorDashboard';
 import DonationHistory from './pages/donor/DonationHistory'; 
 import DonorNotifications from './pages/donor/DonorNotifications'
+import DonorNotificationSettings from './pages/donor/DonorNotificationSettings'
 import DonorLeaderboard from './pages/donor/DonorLeaderboard'
 
 // Campaign Leader Pages
@@ -115,6 +116,11 @@ const App = () => (
             <Route path="/donor/notifications" element={
               <ProtectedRoute allowedRoles={['donor']}>
                 <DonorNotifications/>
+              </ProtectedRoute>
+            } />
+            <Route path="/donor/notification-settings" element={
+              <ProtectedRoute allowedRoles={['donor']}>
+                <DonorNotificationSettings />
               </ProtectedRoute>
             } />
             <Route path="/donor/history" element={
