@@ -53,12 +53,12 @@ const Navbar: React.FC = () => {
       calculateUnreadCount();
     };
 
-    window.addEventListener('storage', handleStorageChange);
-    window.addEventListener('notificationsUpdated', handleNotificationUpdate);
+    globalThis.addEventListener('storage', handleStorageChange);
+    globalThis.addEventListener('notificationsUpdated', handleNotificationUpdate);
 
     return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener('notificationsUpdated', handleNotificationUpdate);
+      globalThis.removeEventListener('storage', handleStorageChange);
+      globalThis.removeEventListener('notificationsUpdated', handleNotificationUpdate);
     };
   }, []);
 
