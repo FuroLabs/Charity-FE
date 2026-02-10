@@ -34,8 +34,11 @@ const Navbar: React.FC = () => {
           setUnreadCount(INITIAL_UNREAD_IDS.length);
         }
       } catch (e) {
+        // Log the error so you know if JSON.parse failed or localStorage was blocked
+        console.error("Failed to load unread count from storage:", e);
+        // Set fallback state
         setUnreadCount(INITIAL_UNREAD_IDS.length);
-      }
+}
     };
 
     // Calculate on mount
