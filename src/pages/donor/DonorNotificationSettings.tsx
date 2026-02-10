@@ -6,7 +6,7 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { ArrowLeft, Bell, Mail, MessageSquare, TrendingUp, Gift, Award, Save, Loader2, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Bell, Mail, MessageSquare, Save, Loader2, CheckCircle } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { authService } from '@/services';
 
