@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -8,10 +8,62 @@ import { useAuth } from '@/contexts/AuthContext';
 import { ConnectionStatus } from '@/components/common/ConnectionStatus';
 import ThemeToggle from '@/components/common/ThemeToggle';
 
+const STORAGE_KEY = 'donor_notifications_read_status';
+
+// Initial notification IDs that are unread by default
+const INITIAL_UNREAD_IDS = [1, 2];
+
 const Navbar: React.FC = () => {
   const { user, logout, isAuthenticated } = useAuth();
   const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
   const navigate = useNavigate();
+
+  // Calculate unread count from localStorage
+  useEffect(() => {
+    const calculateUnreadCount = () => {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          const readIds: number[] = JSON.parse(saved);
+          // Count how many of the initial unread IDs are NOT in the read list
+          const count = INITIAL_UNREAD_IDS.filter(id => !readIds.includes(id)).length;
+          setUnreadCount(count);
+        } else {
+          // No saved data, all initial unread are still unread
+          setUnreadCount(INITIAL_UNREAD_IDS.length);
+        }
+      } catch (e) {
+        // Log the error so you know if JSON.parse failed or localStorage was blocked
+        console.error("Failed to load unread count from storage:", e);
+        // Set fallback state
+        setUnreadCount(INITIAL_UNREAD_IDS.length);
+}
+    };
+
+    // Calculate on mount
+    calculateUnreadCount();
+
+    // Listen for storage changes (for cross-tab sync)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === STORAGE_KEY) {
+        calculateUnreadCount();
+      }
+    };
+
+    // Listen for custom event (for same-tab sync)
+    const handleNotificationUpdate = () => {
+      calculateUnreadCount();
+    };
+
+    globalThis.addEventListener('storage', handleStorageChange);
+    globalThis.addEventListener('notificationsUpdated', handleNotificationUpdate);
+
+    return () => {
+      globalThis.removeEventListener('storage', handleStorageChange);
+      globalThis.removeEventListener('notificationsUpdated', handleNotificationUpdate);
+    };
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -111,9 +163,11 @@ const Navbar: React.FC = () => {
                   <Button variant="ghost" size="sm" asChild>
                     <Link to={getNotificationPath()} className="relative">
                       <Bell className="h-5 w-5" />
-                      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
-                        3
-                      </span>
+                      {unreadCount > 0 && (
+                        <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
+                          {unreadCount}
+                        </span>
+                      )}
                     </Link>
                   </Button>
                 

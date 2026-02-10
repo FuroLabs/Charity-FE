@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -7,77 +8,106 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Bell, Heart, TrendingUp, MessageCircle, Gift, CheckCircle2, Settings, Filter, MoreHorizontal } from 'lucide-react';
 
-const DonorNotifications: React.FC = () => {
-  const [filter, setFilter] = useState('all');
+const STORAGE_KEY = 'donor_notifications_read_status';
 
-  const notifications = [
-    {
-      id: 1,
-      type: 'campaign_update',
-      title: 'Campaign Update: Clean Water Project',
-      message: 'Great news! The first well has been successfully drilled in Kimani village. Water quality tests show excellent results.',
-      timestamp: '2 hours ago',
-      read: false,
-      campaign: 'Clean Water for Rural Communities',
-      avatar: '/images/CleanWater.jpg',
-      icon: TrendingUp
-    },
-    {
-      id: 2,
-      type: 'donation_receipt',
-      title: 'Donation Receipt',
-      message: 'Thank you for your $150 donation to Clean Water for Rural Communities. Your receipt is ready for download.',
-      timestamp: '1 day ago',
-      read: false,
-      campaign: 'Clean Water for Rural Communities',
-      avatar: null,
-      icon: Gift
-    },
-    {
-      id: 3,
-      type: 'achievement',
-      title: 'New Achievement Unlocked!',
-      message: 'Congratulations! You\'ve earned the "Consistent Giver" badge for donating 3 months in a row.',
-      timestamp: '2 days ago',
-      read: true,
-      campaign: null,
-      avatar: null,
-      icon: Heart
-    },
-    {
-      id: 4,
-      type: 'campaign_update',
-      title: 'Education Campaign Progress',
-      message: 'The school construction is now 60% complete. Thanks to donors like you, we\'re making real progress!',
-      timestamp: '3 days ago',
-      read: true,
-      campaign: 'Education for Every Child',
-      avatar: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=50&h=50&fit=crop',
-      icon: TrendingUp
-    },
-    {
-      id: 5,
-      type: 'new_campaign',
-      title: 'New Campaign Recommendation',
-      message: 'Based on your donation history, you might be interested in "Emergency Food Relief" - helping families affected by natural disasters.',
-      timestamp: '5 days ago',
-      read: true,
-      campaign: 'Emergency Food Relief',
-      avatar: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=50&h=50&fit=crop',
-      icon: MessageCircle
-    },
-    {
-      id: 6,
-      type: 'monthly_report',
-      title: 'Your January Impact Report',
-      message: 'See how your donations helped 89 people this month. Your total impact now reaches 1,247 lives!',
-      timestamp: '1 week ago',
-      read: true,
-      campaign: null,
-      avatar: null,
-      icon: TrendingUp
+const initialNotifications = [
+  {
+    id: 1,
+    type: 'campaign_update',
+    title: 'Campaign Update: Clean Water Project',
+    message: 'Great news! The first well has been successfully drilled in Kimani village. Water quality tests show excellent results.',
+    timestamp: '2 hours ago',
+    read: false,
+    campaign: 'Clean Water for Rural Communities',
+    avatar: '/images/CleanWater.jpg',
+    icon: TrendingUp
+  },
+  {
+    id: 2,
+    type: 'donation_receipt',
+    title: 'Donation Receipt',
+    message: 'Thank you for your $150 donation to Clean Water for Rural Communities. Your receipt is ready for download.',
+    timestamp: '1 day ago',
+    read: false,
+    campaign: 'Clean Water for Rural Communities',
+    avatar: null,
+    icon: Gift
+  },
+  {
+    id: 3,
+    type: 'achievement',
+    title: 'New Achievement Unlocked!',
+    message: 'Congratulations! You\'ve earned the "Consistent Giver" badge for donating 3 months in a row.',
+    timestamp: '2 days ago',
+    read: true,
+    campaign: null,
+    avatar: null,
+    icon: Heart
+  },
+  {
+    id: 4,
+    type: 'campaign_update',
+    title: 'Education Campaign Progress',
+    message: 'The school construction is now 60% complete. Thanks to donors like you, we\'re making real progress!',
+    timestamp: '3 days ago',
+    read: true,
+    campaign: 'Education for Every Child',
+    avatar: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=50&h=50&fit=crop',
+    icon: TrendingUp
+  },
+  {
+    id: 5,
+    type: 'new_campaign',
+    title: 'New Campaign Recommendation',
+    message: 'Based on your donation history, you might be interested in "Emergency Food Relief" - helping families affected by natural disasters.',
+    timestamp: '5 days ago',
+    read: true,
+    campaign: 'Emergency Food Relief',
+    avatar: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=50&h=50&fit=crop',
+    icon: MessageCircle
+  },
+  {
+    id: 6,
+    type: 'monthly_report',
+    title: 'Your January Impact Report',
+    message: 'See how your donations helped 89 people this month. Your total impact now reaches 1,247 lives!',
+    timestamp: '1 week ago',
+    read: true,
+    campaign: null,
+    avatar: null,
+    icon: TrendingUp
+  }
+];
+
+// Helper function to load read status from localStorage
+const loadReadStatus = () => {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const readIds: number[] = JSON.parse(saved);
+      return initialNotifications.map(n => ({
+        ...n,
+        read: n.read || readIds.includes(n.id)
+      }));
     }
-  ];
+  } catch (e) {
+    console.error('Failed to load notification status:', e);
+  }
+  return initialNotifications;
+};
+
+const DonorNotifications: React.FC = () => {
+  const navigate = useNavigate();
+  const [filter, setFilter] = useState('all');
+  const [notifications, setNotifications] = useState(loadReadStatus);
+
+  // Save read status to localStorage whenever notifications change
+  useEffect(() => {
+    const readIds = notifications.filter(n => n.read).map(n => n.id);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(readIds));
+    // Dispatch custom event to notify navbar
+    globalThis.dispatchEvent(new Event('notificationsUpdated'));
+  }, [notifications]);
 
   const getTypeLabel = (type: string) => {
     switch (type) {
@@ -92,12 +122,12 @@ const DonorNotifications: React.FC = () => {
 
   const getTypeColor = (type: string) => {
     switch (type) {
-      case 'campaign_update': return 'bg-blue-100 text-blue-800';
-      case 'donation_receipt': return 'bg-green-100 text-green-800';
-      case 'achievement': return 'bg-yellow-100 text-yellow-800';
-      case 'new_campaign': return 'bg-purple-100 text-purple-800';
-      case 'monthly_report': return 'bg-indigo-100 text-indigo-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'campaign_update': return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
+      case 'donation_receipt': return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
+      case 'achievement': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
+      case 'new_campaign': return 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200';
+      case 'monthly_report': return 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200';
+      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200';
     }
   };
 
@@ -111,14 +141,13 @@ const DonorNotifications: React.FC = () => {
   const unreadCount = notifications.filter(n => !n.read).length;
 
   const markAllAsRead = () => {
-    // In a real app, this would update the backend
-    console.log('Marking all as read');
+    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header */}
-      <div className="bg-white border-b">
+      <div className="bg-white dark:bg-gray-800 border-b dark:border-gray-700">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
@@ -140,7 +169,7 @@ const DonorNotifications: React.FC = () => {
                 <CheckCircle2 className="h-4 w-4 mr-2" />
                 Mark All Read
               </Button>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" onClick={() => navigate('/donor/notification-settings')}>
                 <Settings className="h-4 w-4 mr-2" />
                 Settings
               </Button>
@@ -171,7 +200,7 @@ const DonorNotifications: React.FC = () => {
         {/* Notifications List */}
         <div className="space-y-4">
           {filteredNotifications.map((notification) => (
-            <Card key={notification.id} className={`transition-colors duration-200 ${!notification.read ? 'border-l-4 border-l-indigo-500 bg-indigo-50' : 'hover:bg-gray-50'}`}>
+            <Card key={notification.id} className={`transition-colors duration-200 ${notification.read ? 'hover:bg-gray-50 dark:hover:bg-gray-800' : 'border-l-4 border-l-indigo-500 bg-indigo-50 dark:bg-indigo-950'}`}>
               <CardContent className="p-6">
                 <div className="flex items-start space-x-4">
                   {/* Icon or Avatar */}
@@ -184,8 +213,8 @@ const DonorNotifications: React.FC = () => {
                         </AvatarFallback>
                       </Avatar>
                     ) : (
-                      <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
-                        <notification.icon className="h-5 w-5 text-indigo-600" />
+                      <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-900 rounded-full flex items-center justify-center">
+                        <notification.icon className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
                       </div>
                     )}
                   </div>
@@ -193,7 +222,7 @@ const DonorNotifications: React.FC = () => {
                   {/* Content */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-1">
-                      <h3 className="text-sm font-semibold text-gray-900">
+                      <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
                         {notification.title}
                       </h3>
                       <div className="flex items-center space-x-2">
@@ -206,12 +235,12 @@ const DonorNotifications: React.FC = () => {
                       </div>
                     </div>
                     
-                    <p className="text-sm text-gray-700 mb-2">
+                    <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">
                       {notification.message}
                     </p>
                     
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2 text-xs text-gray-500">
+                      <div className="flex items-center space-x-2 text-xs text-gray-500 dark:text-gray-400">
                         <span>{notification.timestamp}</span>
                         {notification.campaign && (
                           <>
@@ -235,9 +264,9 @@ const DonorNotifications: React.FC = () => {
         {filteredNotifications.length === 0 && (
           <Card>
             <CardContent className="text-center py-12">
-              <Bell className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No notifications found</h3>
-              <p className="text-gray-600">
+              <Bell className="h-12 w-12 text-gray-400 dark:text-gray-500 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No notifications found</h3>
+              <p className="text-gray-600 dark:text-gray-400">
                 {filter === 'unread' 
                   ? "You're all caught up! No unread notifications."
                   : "We'll notify you when there are updates on your campaigns."}
