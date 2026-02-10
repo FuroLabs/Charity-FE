@@ -122,7 +122,7 @@ const DonationHistory: React.FC = () => {
   const totalFeesCovered = donations.reduce((sum, donation) => 
     sum + (donation.feesCovered ? donation.processingFee : 0), 0
   );
-  const averageDonation = totalDonated / donations.length;
+  const averageDonation = donations.length > 0 ? totalDonated / donations.length : 0;
 
   if (loading) {
     return (
@@ -191,7 +191,9 @@ const DonationHistory: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Average Donation</p>
-                  <p className="text-2xl font-bold text-purple-600">Rs.{averageDonation.toFixed(0)}</p>
+                  <p className="text-2xl font-bold text-purple-600">
+                    {donations.length > 0 ? `Rs.${averageDonation.toFixed(0)}` : 'N/A'}
+                  </p>
                 </div>
                 <TrendingUp className="h-8 w-8 text-purple-600" />
               </div>
