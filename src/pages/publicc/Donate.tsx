@@ -18,7 +18,6 @@ import {
   ArrowLeft,
   Heart,
   Lock,
-  DollarSign,
 } from "lucide-react";
 import type { CheckedState } from "@radix-ui/react-checkbox";
 import { resolveCampaignImageUrl } from "@/lib/imageUtils";
@@ -193,13 +192,15 @@ const Donate: React.FC = () => {
 
                     {donationAmount === "custom" && (
                       <div className="relative">
-                        <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-sm font-medium text-muted-foreground">
+                          Rs.
+                        </span>
                         <Input
                           type="number"
                           placeholder="Enter amount"
                           value={customAmount}
                           onChange={(e) => setCustomAmount(e.target.value)}
-                          className="pl-10"
+                          className="pl-12"
                           min="1"
                         />
                       </div>
