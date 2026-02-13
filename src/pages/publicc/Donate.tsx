@@ -23,49 +23,6 @@ import type { CheckedState } from "@radix-ui/react-checkbox";
 import { resolveCampaignImageUrl } from "@/lib/imageUtils";
 import { useAuth } from "@/contexts/AuthContext";
 
-// Currency utility function
-const formatCurrency = (amount: number, currency: string = 'LKR'): string => {
-  const currencyMap: Record<string, { symbol: string; locale: string }> = {
-    'LKR': { symbol: 'Rs.', locale: 'si-LK' },
-    'USD': { symbol: '$', locale: 'en-US' },
-    'EUR': { symbol: '€', locale: 'de-DE' },
-    'GBP': { symbol: '£', locale: 'en-GB' },
-    'INR': { symbol: '₹', locale: 'en-IN' },
-    'JPY': { symbol: '¥', locale: 'ja-JP' },
-    'AUD': { symbol: 'A$', locale: 'en-AU' },
-    'CAD': { symbol: 'C$', locale: 'en-CA' }
-  };
-
-  const currencyInfo = currencyMap[currency] || currencyMap['LKR'];
-  
-  try {
-    return new Intl.NumberFormat(currencyInfo.locale, {
-      style: 'currency',
-      currency: currency,
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    }).format(amount);
-  } catch {
-    // Fallback if Intl.NumberFormat fails
-    return `${currencyInfo.symbol} ${amount.toLocaleString()}`;
-  }
-};
-
-// Get currency symbol only
-const getCurrencySymbol = (currency: string = 'LKR'): string => {
-  const currencyMap: Record<string, string> = {
-    'LKR': 'Rs.',
-    'USD': '$',
-    'EUR': '€',
-    'GBP': '£',
-    'INR': '₹',
-    'JPY': '¥',
-    'AUD': 'A$',
-    'CAD': 'C$'
-  };
-  return currencyMap[currency] || currencyMap['LKR'];
-};
-
 const Donate: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -80,8 +37,14 @@ const Donate: React.FC = () => {
   const [campaign, setCampaign] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  // Extract currency from campaign data
+  // Extract currency symbol from campaign data (backend provides this)
+  const currencySymbol = campaign?.currencySymbol || 'Rs.';
   const campaignCurrency = campaign?.currency || 'LKR';
+
+  // Dynamic currency formatter using the campaign's currency symbol
+  const formatAmount = (amount: number): string => {
+    return `${currencySymbol} ${amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  };
 
   // Fetch campaign data
   useEffect(() => {
@@ -220,7 +183,7 @@ const Donate: React.FC = () => {
                         }}
                         className="h-12"
                       >
-                        {formatCurrency(amount, campaignCurrency)}
+                        {formatAmount(amount)}
                       </Button>
                     ))}
                   </div>
@@ -239,7 +202,7 @@ const Donate: React.FC = () => {
                     {donationAmount === "custom" && (
                       <div className="relative">
                         <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-sm font-medium text-muted-foreground">
-                          {getCurrencySymbol(campaignCurrency)}
+                          {currencySymbol}
                         </span>
                         <Input
                           type="number"
@@ -265,7 +228,7 @@ const Donate: React.FC = () => {
                       onCheckedChange={setCoverFees}
                     />
                     <Label htmlFor="coverFees" className="text-sm">
-                      Cover processing fees ({formatCurrency(processingFee, campaignCurrency)}) so
+                      Cover processing fees ({formatAmount(processingFee)}) so
                       100% of my donation goes to this cause
                     </Label>
                   </div>
@@ -320,7 +283,7 @@ const Donate: React.FC = () => {
                   ) : (
                     <>
                       <Lock className="mr-2 h-5 w-5" />
-                      Donate {formatCurrency(totalAmount, campaignCurrency)}
+                      Donate {formatAmount(totalAmount)}
                     </>
                   )}
                 </Button>
@@ -359,8 +322,8 @@ const Donate: React.FC = () => {
 
                     <div className="space-y-2">
                       <div className="flex justify-between text-sm">
-                        <span>{formatCurrency(campaign.currentAmount || 0, campaignCurrency)} raised</span>
-                        <span>{formatCurrency(campaign.targetAmount || 0, campaignCurrency)} goal</span>
+                        <span>{formatAmount(campaign.currentAmount || 0)} raised</span>
+                        <span>{formatAmount(campaign.targetAmount || 0)} goal</span>
                       </div>
                       <Progress
                         value={campaign.targetAmount > 0 ? (campaign.currentAmount / campaign.targetAmount) * 100 : 0}
@@ -388,14 +351,14 @@ const Donate: React.FC = () => {
                   <div className="flex justify-between">
                     <span>Your donation</span>
                     <span className="font-semibold">
-                      {formatCurrency(selectedAmount, campaignCurrency)}
+                      {formatAmount(selectedAmount)}
                     </span>
                   </div>
 
                   {coverFees && (
                     <div className="flex justify-between text-sm text-muted-foreground">
                       <span>Processing fee</span>
-                      <span>{formatCurrency(processingFee, campaignCurrency)}</span>
+                      <span>{formatAmount(processingFee)}</span>
                     </div>
                   )}
 
@@ -403,7 +366,7 @@ const Donate: React.FC = () => {
 
                   <div className="flex justify-between font-semibold text-lg">
                     <span>Total</span>
-                    <span>{formatCurrency(totalAmount, campaignCurrency)}</span>
+                    <span>{formatAmount(totalAmount)}</span>
                   </div>
 
                   <div className="text-xs text-muted-foreground">
