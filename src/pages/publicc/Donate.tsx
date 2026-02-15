@@ -18,7 +18,6 @@ import {
   ArrowLeft,
   Heart,
   Lock,
-  DollarSign,
 } from "lucide-react";
 import type { CheckedState } from "@radix-ui/react-checkbox";
 import { resolveCampaignImageUrl } from "@/lib/imageUtils";
@@ -37,6 +36,15 @@ const Donate: React.FC = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [campaign, setCampaign] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+
+  // Extract currency symbol from campaign data (backend provides this)
+  const currencySymbol = campaign?.currencySymbol || 'Rs.';
+  const campaignCurrency = campaign?.currency || 'LKR';
+
+  // Dynamic currency formatter using the campaign's currency symbol
+  const formatAmount = (amount: number): string => {
+    return `${currencySymbol} ${amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  };
 
   // Fetch campaign data
   useEffect(() => {
@@ -78,7 +86,7 @@ const Donate: React.FC = () => {
       const requestBody = {
         campaignId: id,
         amount: selectedAmount,
-        currency: 'LKR',
+        currency: campaignCurrency,
         donorEmail: user?.email || '',
         donorName: user?.name || '',
         isAnonymous,
@@ -175,7 +183,7 @@ const Donate: React.FC = () => {
                         }}
                         className="h-12"
                       >
-                        Rs. {amount}
+                        {formatAmount(amount)}
                       </Button>
                     ))}
                   </div>
@@ -193,13 +201,15 @@ const Donate: React.FC = () => {
 
                     {donationAmount === "custom" && (
                       <div className="relative">
-                        <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-sm font-medium text-muted-foreground">
+                          {currencySymbol}
+                        </span>
                         <Input
                           type="number"
                           placeholder="Enter amount"
                           value={customAmount}
                           onChange={(e) => setCustomAmount(e.target.value)}
-                          className="pl-10"
+                          className="pl-12"
                           min="1"
                         />
                       </div>
@@ -218,7 +228,7 @@ const Donate: React.FC = () => {
                       onCheckedChange={setCoverFees}
                     />
                     <Label htmlFor="coverFees" className="text-sm">
-                      Cover processing fees (Rs. {processingFee.toFixed(2)}) so
+                      Cover processing fees ({formatAmount(processingFee)}) so
                       100% of my donation goes to this cause
                     </Label>
                   </div>
@@ -273,7 +283,7 @@ const Donate: React.FC = () => {
                   ) : (
                     <>
                       <Lock className="mr-2 h-5 w-5" />
-                      Donate Rs. {totalAmount.toFixed(2)}
+                      Donate {formatAmount(totalAmount)}
                     </>
                   )}
                 </Button>
@@ -312,8 +322,8 @@ const Donate: React.FC = () => {
 
                     <div className="space-y-2">
                       <div className="flex justify-between text-sm">
-                        <span>Rs. {(campaign.currentAmount || 0).toLocaleString()} raised</span>
-                        <span>Rs. {(campaign.targetAmount || 0).toLocaleString()} goal</span>
+                        <span>{formatAmount(campaign.currentAmount || 0)} raised</span>
+                        <span>{formatAmount(campaign.targetAmount || 0)} goal</span>
                       </div>
                       <Progress
                         value={campaign.targetAmount > 0 ? (campaign.currentAmount / campaign.targetAmount) * 100 : 0}
@@ -341,14 +351,14 @@ const Donate: React.FC = () => {
                   <div className="flex justify-between">
                     <span>Your donation</span>
                     <span className="font-semibold">
-                      Rs. {selectedAmount.toFixed(2)}
+                      {formatAmount(selectedAmount)}
                     </span>
                   </div>
 
                   {coverFees && (
                     <div className="flex justify-between text-sm text-muted-foreground">
                       <span>Processing fee</span>
-                      <span>Rs. {processingFee.toFixed(2)}</span>
+                      <span>{formatAmount(processingFee)}</span>
                     </div>
                   )}
 
@@ -356,7 +366,7 @@ const Donate: React.FC = () => {
 
                   <div className="flex justify-between font-semibold text-lg">
                     <span>Total</span>
-                    <span>Rs. {totalAmount.toFixed(2)}</span>
+                    <span>{formatAmount(totalAmount)}</span>
                   </div>
 
                   <div className="text-xs text-muted-foreground">
