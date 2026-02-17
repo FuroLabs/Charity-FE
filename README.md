@@ -85,19 +85,18 @@ src/
 
 ### Installation
 
-```bash
 # Install dependencies
-pnpm install
+npm install
 
 # Start development server
-pnpm dev
+npm run dev
 
 # Build for production
-pnpm build
+npm run build
 
 # Preview production build
-pnpm preview
-```
+npm run preview
+
 
 ### Environment Variables
 
